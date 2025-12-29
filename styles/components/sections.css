@@ -1,0 +1,71 @@
+/* ========== СЕКЦИИ ========== */
+.section {
+  margin-bottom: 2rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.section-title-wrapper {
+  flex: 1;
+}
+
+.section-header h2 {
+  font-size: var(--text-19);
+  font-weight: 500;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-description {
+  font-size: var(--text-14);
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin: 0;
+  max-width: 600px;
+}
+
+.section-icon {
+  width: var(--icon-24);
+  height: var(--icon-24);
+}
+
+#completedSection .section-icon {
+  width: 60px;
+  height: 60px;
+}
+
+#plannedSection .section-icon {
+  width: 60px;
+  height: 60px;
+}
+
+#watchingSection .section-icon {
+  width: 60px;
+  height: 60px;
+}
+
+#postponedSection .section-icon {
+  width: 60px;
+  height: 60px;
+}
+
+.section-count {
+  font-size: var(--text-14);
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  margin-left: 8px;
+  border: 1px solid var(--border-color);
+}

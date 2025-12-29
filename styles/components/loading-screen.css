@@ -1,0 +1,314 @@
+:root {
+  /* Импортируем переменные из base.css */
+  --primary-color: #ff4757;
+  --primary-light: #ff6b7a;
+  --primary-dark: #e63e4d;
+
+  --dark-bg: #0a0a0a;
+  --dark-bg-light: #1a1a1a;
+  --card-bg: #161616;
+  --card-bg-light: #262626;
+
+  --text-color: #f8fafc;
+  --text-secondary: #b0b0b0;
+  --text-tertiary: #898989;
+
+  --border-color: rgba(255, 255, 255, 0.2);
+  --border-light: rgba(255, 255, 255, 0.1);
+
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+
+  /* Размеры текста */
+  --text-11: 0.6875rem; /* 11px */
+  --text-12: 0.75rem; /* 12px */
+  --text-14: 0.875rem; /* 14px */
+  --text-15: 0.9375rem; /* 15px */
+  --text-16: 1rem; /* 16px */
+  --text-18: 1.125rem; /* 18px */
+  --text-19: 1.1875rem; /* 19px */
+  --text-20: 1.25rem; /* 20px */
+  --text-24: 1.5rem; /* 24px */
+
+  /* Скругления */
+  --radius-5: 5px;
+  --radius-8: 8px;
+  --radius-12: 12px;
+  --radius-16: 16px;
+  --radius-25: 25px;
+  --radius-full: 9999px;
+
+  /* Тени */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.5);
+
+  /* Анимации */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 350ms ease;
+  --transition-bounce: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Анимация появления */
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Анимация исчезновения */
+.fade-out {
+  animation: fadeOut 0.5s ease-in forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+/* Обновленный CSS для загрузочного экрана */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #0a0a0a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  color: white;
+  overflow: hidden;
+}
+
+.loading-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.loading-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.9;
+}
+
+.loading-background svg {
+  width: 100%;
+  height: 100%;
+}
+
+.loading-content {
+  background: var(--dark-bg);
+  width: 700px;
+  height: 350px;
+  border-radius: var(--radius-25);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 2;
+  padding: 50px;
+  border: 2px solid var(--border-color);
+}
+
+.loading-logo {
+  text-align: center;
+}
+
+.loading-logo img {
+  width: 300px;
+  height: 70px;
+}
+
+.progress-container {
+  margin: 53px 0;
+  position: relative;
+}
+
+.progress-bar {
+  height: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 15px; /* Добавить отступ */
+}
+
+.progress-percent {
+  font-size: var(--text-19);
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-family: "Montserrat";
+  text-align: center;
+  position: relative; /* Убрать absolute */
+  margin-top: 5px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--primary-light)
+  );
+  width: 0%;
+  transition: width 1.2s cubic-bezier(0.25, 0.1, 0.25, 1); /* Более плавная анимация */
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  animation: progressShine 1s ease-in-out infinite;
+}
+
+.loading-status-container {
+  display: flex;
+  position: absolute;
+  bottom: 30px;
+  left: 50px;
+  right: 50px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.loading-status {
+  font-size: var(--text-14);
+  color: var(--text-secondary);
+  position: relative;
+  display: inline-block;
+}
+
+.loading-status::after {
+  content: "...";
+  display: inline-block;
+  animation: dots 1.5s steps(4, end) infinite;
+  width: 20px;
+}
+
+.loading-meta {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-14);
+  color: var(--text-tertiary);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px 16px;
+  border-radius: var(--radius-25);
+  backdrop-filter: blur(10px);
+}
+
+.meta-item i {
+  font-size: var(--text-12);
+  opacity: 0.7;
+}
+
+.developer-name {
+  font-weight: 500;
+}
+
+/* Анимации */
+@keyframes logoReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes progressShine {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes dots {
+  0%,
+  20% {
+    content: ".";
+  }
+  40% {
+    content: "..";
+  }
+  60%,
+  100% {
+    content: "...";
+  }
+}
+
+/* Эффект скрытия */
+.loading-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  transform: scale(1.05);
+}
+
+/* Плавный переход */
+.loading-screen.smooth-transition {
+  animation: smoothFadeOut 1.5s ease-out forwards;
+}
+
+/* Анимация плавного перехода */
+@keyframes smoothFadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "name": "tsundoku",
+  "version": "1.0.0",
+  "description": "Персональный трекер аниме",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "cross-env NODE_ENV=development electron .",
+    "dev:win": "set NODE_ENV=development&& electron .",
+    "build": "electron-builder --win",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux",
+    "clean": "rimraf dist",
+    "pack": "electron-builder --dir"
+  },
+  "keywords": [
+    "anime",
+    "tracker",
+    "electron",
+    "desktop"
+  ],
+  "author": "morphine",
+  "license": "MIT",
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.3"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "electron-log": "^5.0.1",
+    "electron-store": "^8.2.0",
+    "electron-updater": "^6.1.1"
+  },
+  "build": {
+    "appId": "com.tsundoku.app",
+    "productName": "Tsundoku",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!**/node_modules/*.d.ts",
+      "!**/.{git,hg,svn}",
+      "!**/{.git,.hg,.svn}",
+      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+      "!.editorconfig",
+      "!**/._*",
+      "!**/{.DS_Store,.git,.hg,.svn,__pycache__,thumbs.db,.gitignore,.gitattributes}",
+      "!**/{appveyor.yml,.travis.yml,circle.yml}",
+      "!**/{npm-debug.log,yarn.lock,.yarn-integrity}"
+    ],
+    "asar": true,
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "m0rph1num",
+      "repo": "Tsundoku"
+    }
+  }
+}

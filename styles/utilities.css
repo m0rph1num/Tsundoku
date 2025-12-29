@@ -1,0 +1,299 @@
+/* ========== УТИЛИТАРНЫЕ КЛАССЫ ========== */
+
+/* Анимации */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: translateY(-50%) rotate(360deg);
+  }
+}
+
+@keyframes selectChanged {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+/* ========== СКЕЛЕТОН-ЗАГРУЗКА ========== */
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.skeleton-card {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 75%
+  );
+  border-radius: var(--radius-16);
+  height: 320px;
+  animation: skeleton-loading 1.5s infinite;
+  background-size: 200% 100%;
+}
+
+/* ========== СТАТУС-ИНДИКАТОРЫ ========== */
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: var(--text-12);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-indicator.cached {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--success);
+  border: 1px solid var(--success);
+}
+
+.status-indicator.loading {
+  background: rgba(255, 71, 87, 0.2);
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.status-indicator.error {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
+
+/* ========== ВИРТУАЛЬНАЯ СЕТКА ========== */
+.anime-grid.virtual {
+  position: relative;
+  overflow-y: auto;
+  height: 600px;
+  background: var(--dark-bg-light);
+  border-radius: var(--radius-12);
+  border: 1px solid var(--border-color);
+}
+
+.anime-grid.virtual::-webkit-scrollbar {
+  width: 10px;
+}
+
+.anime-grid.virtual::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-full);
+}
+
+.anime-grid.virtual::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    to bottom,
+    var(--primary-color),
+    var(--primary-dark)
+  );
+  border-radius: var(--radius-full);
+}
+
+/* ========== КЭШ-СТАТУС ========== */
+.cache-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-8);
+  margin-bottom: 1rem;
+  font-size: var(--text-12);
+  color: var(--text-secondary);
+}
+
+.cache-info {
+  display: flex;
+  gap: 12px;
+}
+
+.cache-hit {
+  color: var(--success);
+}
+
+.cache-miss {
+  color: var(--warning);
+}
+
+/* ========== СТИЛИ ДЛЯ РЕТРАЕВ ========== */
+.retry-button {
+  background: var(--warning);
+  color: white;
+  padding: 8px 16px;
+  border-radius: var(--radius-8);
+  border: none;
+  font-size: var(--text-14);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.retry-button:hover {
+  background: #e0a800;
+  transform: translateY(-1px);
+}
+
+/* ========== ВАЛИДАЦИОННЫЕ СТИЛИ ========== */
+.validation-error {
+  border: 2px solid var(--danger) !important;
+  animation: shake 0.5s ease;
+}
+
+/* ========== ДОП СТИЛИ ДЛЯ ПРОФИЛЯ ========== */
+.profile-meta {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.profile-meta p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-meta i {
+  color: var(--primary-color);
+}
+
+.profile-actions-grid {
+  margin-top: 2rem;
+}
+
+.profile-actions-grid h3 {
+  font-size: var(--text-20);
+  margin-bottom: 1rem;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-12);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.action-btn:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.action-btn i {
+  font-size: 1.5rem;
+}
+
+.recent-anime {
+  margin-top: 2rem;
+}
+
+.recent-anime h3 {
+  font-size: var(--text-20);
+  margin-bottom: 1rem;
+}
+
+.recent-anime .anime-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+}

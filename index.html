@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+    default-src 'self' 'unsafe-inline' file:;
+    script-src 'self' 'unsafe-inline' 'unsafe-eval';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+    font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+    img-src 'self' data: https://shikimori.one file:;
+    connect-src 'self' https://shikimori.one;
+  "
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tsundoku</title>
+
+    <!-- Шрифты и иконки -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Стили -->
+    <link rel="stylesheet" href="styles/base.css" />
+    <link rel="stylesheet" href="styles/layout.css" />
+    <link rel="stylesheet" href="styles/components/header.css" />
+    <link rel="stylesheet" href="styles/components/navigation.css" />
+    <link rel="stylesheet" href="styles/components/cards.css" />
+    <link rel="stylesheet" href="styles/components/modals.css" />
+    <link rel="stylesheet" href="styles/components/sections.css" />
+    <link rel="stylesheet" href="styles/components/buttons.css" />
+    <link rel="stylesheet" href="styles/components/notifications.css" />
+    <link rel="stylesheet" href="styles/pages/search.css" />
+    <link rel="stylesheet" href="styles/pages/library.css" />
+    <link rel="stylesheet" href="styles/utilities.css" />
+    <link rel="stylesheet" href="styles/pages/profile.css" />
+    <link rel="stylesheet" href="styles/components/loading-screen.css" />
+
+    <!-- Иконка для вкладки -->
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
+  </head>
+  <body>
+    <!-- ЗАГРУЗОЧНЫЙ ЭКРАН -->
+    <div id="loading-screen" class="loading-screen">
+      <div class="loading-container">
+        <!-- SVG фон -->
+        <div class="loading-background">
+          <img
+            src="assets/loading-screen-bg.svg"
+            alt="Фон загрузочного экрана"
+            class="loading-bg-image"
+          />
+        </div>
+
+        <!-- Центральный блок -->
+        <div class="loading-content">
+          <!-- Логотип -->
+          <div class="loading-logo">
+            <img
+              src="assets/logo.svg"
+              alt="Фон загрузочного экрана"
+              class="loading-bg-image"
+            />
+          </div>
+
+          <!-- Прогресс-бар -->
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div class="progress-fill" id="loading-progress"></div>
+              <div class="progress-percent" id="loading-percent">0%</div>
+            </div>
+          </div>
+
+          <div class="loading-status-container">
+            <p class="loading-status" id="loading-status">
+              Инициализация приложения
+            </p>
+            <div class="loading-meta">
+              <div class="meta-item version-info">
+                <i class="fas fa-code-branch"></i>
+                <span id="app-version">1.0.0</span>
+              </div>
+              <div class="meta-item developer-info">
+                <i class="fas fa-user"></i>
+                <span class="developer-name">morphine</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container hidden">
+      <!-- Шапка -->
+      <header class="header">
+        <a href="#" class="logo">
+          <img src="assets/logo.svg" alt="Tsundoku" class="logo-img" />
+        </a>
+
+        <div class="search-box">
+          <img src="assets/icons/search.svg" alt="Поиск" class="search-icon" />
+          <input type="text" id="searchInput" placeholder="Поиск..." />
+        </div>
+
+        <!-- КНОПКА ПРОФИЛЯ -->
+        <button
+          class="profile-btn"
+          id="profileBtn"
+          onclick="handleProfileClick(event)"
+        >
+          <img src="assets/default-avatar.png" alt="Профиль" class="avatar" />
+        </button>
+
+        <!-- Модальное окно профиля (должно быть ПОСЛЕ кнопки) -->
+        <div class="profile-modal" id="profileModal">
+          <div class="menu-header">
+            <div class="user-info">
+              <div class="username">Пользователь</div>
+            </div>
+          </div>
+
+          <div class="profile-menu">
+            <button class="menu-item" onclick="showProfilePage()">
+              <img
+                src="assets/icons/profile.svg"
+                alt="Профиль"
+                class="menu-icon"
+              />
+              <span>Профиль</span>
+            </button>
+
+            <button class="menu-item" onclick="showSettingsPage()">
+              <img
+                src="assets/icons/settings.svg"
+                alt="Настройки"
+                class="menu-icon"
+              />
+              <span>Настройки</span>
+            </button>
+
+            <button class="menu-item" onclick="showAboutModal()">
+              <img
+                src="assets/icons/about.svg"
+                alt="О приложении"
+                class="menu-icon"
+              />
+              <span>О приложении</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Навигация -->
+      <nav class="navbar">
+        <div class="nav-container">
+          <button class="nav-tab active" data-status="all">
+            <img
+              src="assets/icons/home_icon.svg"
+              alt="Главная"
+              class="nav-icon"
+            />
+            <span>Главная</span>
+          </button>
+          <button class="nav-tab" data-status="planned">
+            <img
+              src="assets/icons/calendar_icon.svg"
+              alt="В планах"
+              class="nav-icon"
+            />
+            <span>В планах</span>
+          </button>
+          <button class="nav-tab" data-status="watching">
+            <img src="assets/icons/watch.svg" alt="Смотрю" class="nav-icon" />
+            <span>Смотрю</span>
+          </button>
+          <button class="nav-tab" data-status="completed">
+            <img
+              src="assets/icons/checks-circle_icon.svg"
+              alt="Просмотрено"
+              class="nav-icon"
+            />
+            <span>Просмотрено</span>
+          </button>
+          <button class="nav-tab" data-status="postponed">
+            <img
+              src="assets/icons/pause-circle_icon.svg"
+              alt="Отложено"
+              class="nav-icon"
+            />
+            <span>Отложено</span>
+          </button>
+        </div>
+      </nav>
+
+      <!-- Основное содержимое -->
+      <main class="content-area">
+        <!-- Секция 1: Готово к просмотру -->
+        <section class="section" id="readyToWatchSection">
+          <div class="section-header">
+            <img
+              src="assets/icons/calendar_check.svg"
+              alt="Готово к просмотру"
+              class="section-icon"
+            />
+            <h2>Готово к просмотру</h2>
+            <span class="section-count">(0)</span>
+          </div>
+          <div class="anime-grid" id="readyToWatchGrid">
+            <div class="empty-state">
+              <i class="fas fa-film fa-3x"></i>
+              <h3>Нет аниме</h3>
+              <p>Добавьте аниме в библиотеку</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Секция 2: Ожидают выхода серий -->
+        <section class="section" id="waitingEpisodesSection">
+          <div class="section-header">
+            <img
+              src="assets/icons/clock.svg"
+              alt="Ожидают выхода серий"
+              class="section-icon"
+            />
+            <h2>Ожидают выхода серий</h2>
+            <span class="section-count">(0)</span>
+          </div>
+          <div class="anime-grid" id="waitingEpisodesGrid">
+            <div class="empty-state">
+              <i class="fas fa-clock fa-3x"></i>
+              <h3>Нет ожидающих аниме</h3>
+              <p>Здесь будут аниме с ожидающими сериями</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Секция 3: Анонсы -->
+        <section class="section" id="announcementsSection">
+          <div class="section-header">
+            <img
+              src="assets/icons/notifications.svg"
+              alt="Анонсы"
+              class="section-icon"
+            />
+            <h2>Анонсы</h2>
+            <span class="section-count">(0)</span>
+          </div>
+          <!-- Используем класс anime-grid для единого стиля -->
+          <div class="anime-grid" id="announcementsGrid">
+            <div class="empty-state">
+              <i class="fas fa-bell fa-3x"></i>
+              <h3>Нет анонсов</h3>
+              <p>Здесь будут отображаться анонсы новых сезонов</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Секция 4: Аниме в планах (будет скрыта по умолчанию) -->
+        <section class="section" id="plannedSection" style="display: none">
+          <div class="section-header">
+            <img
+              src="assets/icons/calendar_icon.svg"
+              alt="В планах"
+              class="section-icon"
+            />
+            <div class="section-title-wrapper">
+              <h2>Аниме в планах</h2>
+              <p class="section-description">
+                Здесь собраны все аниме, которые вы планируете посмотреть.
+                Добавляйте сюда новые тайтлы и следите за их выходом.
+              </p>
+            </div>
+            <span class="section-count">(0)</span>
+          </div>
+          <div class="anime-grid" id="plannedGrid">
+            <div class="empty-state">
+              <i class="fas fa-calendar-plus fa-3x"></i>
+              <h3>Планы пусты</h3>
+              <p>Добавьте аниме в список планов</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Секция 5: Смотрю сейчас -->
+        <section class="section" id="watchingSection" style="display: none">
+          <div class="section-header">
+            <img
+              src="assets/icons/watch.svg"
+              alt="Смотрю"
+              class="section-icon"
+            />
+            <div class="section-title-wrapper">
+              <h2>Смотрю сейчас</h2>
+              <p class="section-description">
+                Аниме, которые вы смотрите в данный момент. Отслеживайте
+                прогресс и не пропускайте новые эпизоды.
+              </p>
+            </div>
+            <span class="section-count">(0)</span>
+          </div>
+          <div class="anime-grid" id="watchingGrid">
+            <div class="empty-state">
+              <i class="fas fa-play-circle fa-3x"></i>
+              <h3>Ничего не смотрю</h3>
+              <p>Начните смотреть какое-нибудь аниме</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Секция 6: Просмотренные аниме -->
+        <section class="section" id="completedSection" style="display: none">
+          <div class="section-header">
+            <img
+              src="assets/icons/checks-circle_icon.svg"
+              alt="Просмотрено"
+              class="section-icon"
+            />
+            <div class="section-title-wrapper">
+              <h2>Просмотренные аниме</h2>
+              <p class="section-description">
+                Здесь находятся все аниме, которые вы уже посмотрели. Включая
+                завершенные сериалы и фильмы.
+              </p>
+            </div>
+            <span class="section-count">(0)</span>
+          </div>
+          <div class="anime-grid" id="completedGrid">
+            <div class="empty-state">
+              <i class="fas fa-check-circle fa-3x"></i>
+              <h3>Еще не просмотрено</h3>
+              <p>Здесь появятся завершенные аниме</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Секция 7: Отложенные аниме -->
+        <section class="section" id="postponedSection" style="display: none">
+          <div class="section-header">
+            <img
+              src="assets/icons/pause-circle_icon.svg"
+              alt="Отложено"
+              class="section-icon"
+            />
+            <div class="section-title-wrapper">
+              <h2>Отложенные аниме</h2>
+              <p class="section-description">
+                Аниме, которые вы временно отложили. Вернитесь к ним, когда
+                будет время или настроение.
+              </p>
+            </div>
+            <span class="section-count">(0)</span>
+          </div>
+          <div class="anime-grid" id="postponedGrid">
+            <div class="empty-state">
+              <i class="fas fa-pause-circle fa-3x"></i>
+              <h3>Нет отложенных аниме</h3>
+              <p>Здесь будут аниме, которые вы отложили на потом</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Секция 4: Результаты поиска -->
+        <section
+          class="section search-results-section hidden"
+          id="searchResultsSection"
+        >
+          <div class="section-header">
+            <img
+              src="assets/icons/search.svg"
+              alt="Поиск"
+              class="section-icon"
+            />
+            <h2>Результаты поиска</h2>
+            <!-- УБИРАЕМ КНОПКУ ЗАКРЫТИЯ -->
+          </div>
+          <div class="search-controls">
+            <div class="search-stats" id="searchStats">
+              Найдено 0 результатов
+            </div>
+            <div class="search-sorting">
+              <div class="sorting-wrapper">
+                <i class="fas fa-sort-amount-down sorting-icon"></i>
+                <div class="custom-select">
+                  <select id="searchSort" class="sort-select">
+                    <option value="relevance">По релевантности</option>
+                    <option value="popularity">По популярности</option>
+                    <option value="name">По названию</option>
+                    <option value="aired_on">По дате выхода</option>
+                  </select>
+                  <div class="select-arrow">
+                    <i class="fas fa-chevron-down"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="anime-grid search-results-grid" id="searchResultsGrid">
+            <div class="empty-state">
+              <i class="fas fa-search fa-3x"></i>
+              <h3>Введите запрос для поиска</h3>
+              <p>Начните вводить название аниме в строке поиска</p>
+            </div>
+          </div>
+          <div class="search-pagination hidden" id="searchPagination">
+            <button class="btn-pagination prev" disabled>← Назад</button>
+            <div class="page-numbers"></div>
+            <button class="btn-pagination next">Далее →</button>
+          </div>
+        </section>
+
+        <!-- Внутри content-area -->
+        <section id="profileSection" class="hidden">
+          <div class="profile-header">
+            <button class="btn-back" onclick="hideProfilePage()">
+              <i class="fas fa-arrow-left"></i> Назад в библиотеку
+            </button>
+            <h1>Мой профиль</h1>
+          </div>
+
+          <div class="profile-content">
+            <!-- Информация о пользователе -->
+            <div class="user-profile-card">
+              <div class="user-main-info">
+                <div class="avatar-container">
+                  <div class="avatar-wrapper">
+                    <img
+                      src="assets/default-avatar.png"
+                      alt="Аватар"
+                      class="user-avatar"
+                      id="profileAvatar"
+                    />
+                    <button
+                      class="avatar-change-btn"
+                      onclick="openAvatarModal()"
+                    >
+                      <i class="fas fa-camera"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="user-details">
+                  <h2 class="username" id="profileUsername">
+                    Аниме-энтузиаст
+                    <button
+                      class="edit-username-btn"
+                      onclick="startEditingUsername()"
+                    >
+                      <i class="fas fa-pencil-alt"></i>
+                    </button>
+                  </h2>
+                  <div class="user-meta">
+                    <div class="meta-item">
+                      <i class="fas fa-heart"></i>
+                      <span
+                        >Любимый жанр:
+                        <strong id="favGenre">Сёнен</strong></span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Статистика библиотеки -->
+            <div class="stats-section">
+              <h2 class="section-title">
+                <i class="fas fa-book-open"></i> Статистика библиотеки
+              </h2>
+
+              <div class="stats-grid">
+                <div class="stat-item large">
+                  <div class="stat-icon">
+                    <i class="fas fa-film"></i>
+                  </div>
+                  <div class="stat-info">
+                    <div class="stat-value-library" id="statTotal">0</div>
+                    <div class="stat-label">Всего аниме</div>
+                  </div>
+                </div>
+
+                <div class="stat-item">
+                  <div class="stat-icon">
+                    <i class="fas fa-play-circle"></i>
+                  </div>
+                  <div class="stat-info">
+                    <div class="stat-value-library" id="statWatching">0</div>
+                    <div class="stat-label">Смотрю</div>
+                  </div>
+                </div>
+
+                <div class="stat-item">
+                  <div class="stat-icon">
+                    <i class="fas fa-calendar-plus"></i>
+                  </div>
+                  <div class="stat-info">
+                    <div class="stat-value-library" id="statPlanned">0</div>
+                    <div class="stat-label">В планах</div>
+                  </div>
+                </div>
+
+                <div class="stat-item">
+                  <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                  </div>
+                  <div class="stat-info">
+                    <div class="stat-value-library" id="statCompleted">0</div>
+                    <div class="stat-label">Просмотрено</div>
+                  </div>
+                </div>
+
+                <div class="stat-item">
+                  <div class="stat-icon">
+                    <i class="fas fa-pause-circle"></i>
+                  </div>
+                  <div class="stat-info">
+                    <div class="stat-value-library" id="statPostponed">0</div>
+                    <div class="stat-label">Отложено</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Личная статистика пользователя -->
+            <div class="personal-stats-section">
+              <h2 class="section-title">
+                <i class="fas fa-chart-bar"></i> Моя статистика
+              </h2>
+
+              <div class="personal-stats-grid">
+                <div class="personal-stat">
+                  <div class="personal-stat-icon">
+                    <i class="fas fa-clock"></i>
+                  </div>
+                  <div class="personal-stat-content">
+                    <h3>Часов просмотра</h3>
+                    <div class="personal-stat-value" id="statHours">0</div>
+                    <p class="personal-stat-desc">Примерное время за аниме</p>
+                  </div>
+                </div>
+
+                <div class="personal-stat">
+                  <div class="personal-stat-icon">
+                    <i class="fas fa-list-ol"></i>
+                  </div>
+                  <div class="personal-stat-content">
+                    <h3>Просмотрено серий</h3>
+                    <div class="personal-stat-value" id="statEpisodes">0</div>
+                    <p class="personal-stat-desc">Всего эпизодов</p>
+                  </div>
+                </div>
+
+                <div class="personal-stat">
+                  <div class="personal-stat-icon">
+                    <i class="fas fa-chart-pie"></i>
+                  </div>
+                  <div class="personal-stat-content">
+                    <h3>Завершено</h3>
+                    <div class="personal-stat-value" id="completionPercent">
+                      0%
+                    </div>
+                    <p class="personal-stat-desc">От всей библиотеки</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Модальное окно смены аватара -->
+      <div class="modal-overlay hidden" id="avatarModal">
+        <div class="modal modal-md">
+          <div class="modal-header">
+            <h3>Смена аватара</h3>
+            <button class="close-modal" onclick="closeAvatarModal()">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="avatar-upload-options">
+              <!-- Поле для URL -->
+              <div class="upload-option">
+                <h4><i class="fas fa-link"></i> Вставить URL</h4>
+                <div class="url-input-container">
+                  <input
+                    type="url"
+                    id="avatarUrl"
+                    placeholder="https://example.com/avatar.jpg"
+                    class="url-input"
+                  />
+                  <button class="btn-url-preview" onclick="previewAvatar()">
+                    <i class="fas fa-eye"></i> Предпросмотр
+                  </button>
+                </div>
+                <div class="url-preview hidden" id="urlPreview">
+                  <img src="" alt="Предпросмотр" id="urlPreviewImage" />
+                </div>
+              </div>
+
+              <!-- Разделитель -->
+              <div class="upload-divider">
+                <span>или</span>
+              </div>
+
+              <!-- Drag & Drop -->
+              <div class="upload-option">
+                <h4><i class="fas fa-upload"></i> Загрузить файл</h4>
+                <div class="drop-zone" id="dropZone">
+                  <i class="fas fa-cloud-upload-alt fa-2x"></i>
+                  <p>Перетащите изображение сюда</p>
+                  <p class="drop-zone-hint">или</p>
+                  <button
+                    class="btn-browse"
+                    onclick="document.getElementById('fileInput').click()"
+                  >
+                    Выберите файл
+                  </button>
+                  <input
+                    type="file"
+                    id="fileInput"
+                    accept="image/*"
+                    class="hidden"
+                  />
+                  <p class="drop-zone-info">PNG, JPG до 2MB</p>
+                </div>
+                <div class="file-preview hidden" id="filePreview">
+                  <img src="" alt="Предпросмотр" id="filePreviewImage" />
+                  <button
+                    class="btn-remove-preview"
+                    onclick="removeFilePreview()"
+                  >
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="avatar-modal-actions">
+              <button
+                class="btn-primary"
+                id="saveAvatarBtn"
+                onclick="saveAvatar()"
+                disabled
+              >
+                <i class="fas fa-save"></i> Сохранить аватар
+              </button>
+              <button class="btn-secondary" onclick="closeAvatarModal()">
+                <i class="fas fa-times"></i> Отмена
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Модальное окно для редактирования аниме -->
+      <div class="modal-overlay hidden" id="editAnimeModal">
+        <div class="modal modal-md">
+          <div class="modal-header">
+            <h3>Редактировать аниме</h3>
+            <button class="close-modal" id="closeEditModal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="edit-anime-info">
+              <h4 id="editAnimeTitle">Название аниме</h4>
+              <p class="current-episode-info">
+                Текущий эпизод: <span id="editCurrentEpisode">0</span>
+              </p>
+            </div>
+
+            <div class="edit-status-options">
+              <button class="edit-status-option" data-status="planned">
+                <i class="fas fa-calendar-plus"></i>
+                <span>В планах</span>
+              </button>
+              <button class="edit-status-option" data-status="watching">
+                <i class="fas fa-play-circle"></i>
+                <span>Смотрю</span>
+              </button>
+              <button class="edit-status-option" data-status="completed">
+                <i class="fas fa-check-circle"></i>
+                <span>Просмотрено</span>
+              </button>
+              <button class="edit-status-option" data-status="postponed">
+                <i class="fas fa-pause-circle"></i>
+                <span>Отложено</span>
+              </button>
+            </div>
+
+            <div class="edit-episode-input hidden" id="editEpisodeInput">
+              <label for="editEpisodeNumber">Текущий эпизод:</label>
+              <input
+                type="number"
+                id="editEpisodeNumber"
+                min="0"
+                placeholder="Введите номер эпизода"
+              />
+            </div>
+
+            <!-- ДОБАВЬТЕ ЭТОТ БЛОК ДЛЯ ИЗМЕНЕНИЯ ПОСТЕРА -->
+            <div class="edit-poster-input" id="editPosterInput">
+              <label for="editPosterUrl">URL постера:</label>
+              <input
+                type="url"
+                id="editPosterUrl"
+                placeholder="https://example.com/poster.jpg"
+              />
+              <div class="poster-preview-container">
+                <img
+                  id="posterPreview"
+                  src=""
+                  alt="Предпросмотр постера"
+                  class="poster-preview"
+                />
+                <div class="poster-preview-info">
+                  <p>Текущий постер:</p>
+                  <img
+                    id="currentPosterPreview"
+                    src=""
+                    alt="Текущий постер"
+                    class="current-poster-preview"
+                  />
+                </div>
+              </div>
+              <div class="poster-tips">
+                <p><small>Советы:</small></p>
+                <ul>
+                  <li>
+                    <small
+                      >Можно загрузить изображение на
+                      <a href="https://imgur.com" target="_blank"
+                        >Imgur</a
+                      ></small
+                    >
+                  </li>
+                  <li><small>Рекомендуемый размер: 210×350px</small></li>
+                  <li><small>Форматы: JPG, PNG, WebP</small></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="edit-modal-actions">
+              <button class="btn-primary" id="confirmEditBtn">
+                <i class="fas fa-save"></i> Сохранить
+              </button>
+              <button class="btn-danger" id="deleteAnimeBtn">
+                <i class="fas fa-trash"></i> Удалить
+              </button>
+              <button class="btn-secondary" id="cancelEditBtn">
+                <i class="fas fa-times"></i> Отмена
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Попап с деталями аниме -->
+      <div class="modal-overlay hidden" id="detailModal">
+        <div class="modal modal-lg">
+          <div class="modal-header">
+            <h3 id="animeDetailTitle">Детали аниме</h3>
+            <button class="close-modal" id="closeDetailModal">&times;</button>
+          </div>
+          <div class="modal-body" id="animeDetailContent">
+            <div class="loading-spinner">
+              <i class="fas fa-spinner fa-spin fa-2x"></i>
+              <p>Загрузка информации...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Модальное окно для выбора статуса -->
+      <div class="modal-overlay hidden" id="statusModal">
+        <div class="modal modal-md">
+          <div class="modal-header">
+            <h3>Выберите статус</h3>
+          </div>
+          <div class="modal-body">
+            <div class="status-options">
+              <button class="status-option" data-status="planned">
+                <i class="fas fa-calendar-plus"></i>
+                <span>В планах</span>
+              </button>
+              <button class="status-option" data-status="watching">
+                <i class="fas fa-play-circle"></i>
+                <span>Смотрю</span>
+              </button>
+              <button class="status-option" data-status="completed">
+                <i class="fas fa-check-circle"></i>
+                <span>Просмотрено</span>
+              </button>
+              <button class="status-option" data-status="postponed">
+                <i class="fas fa-pause-circle"></i>
+                <span>Отложено</span>
+              </button>
+            </div>
+
+            <div class="episode-input hidden" id="episodeInput">
+              <label for="episodeNumber"
+                >На каком эпизоде вы остановились?</label
+              >
+              <input
+                type="number"
+                id="episodeNumber"
+                min="1"
+                placeholder="Введите номер эпизода"
+              />
+            </div>
+
+            <div class="modal-actions">
+              <button class="btn-primary" id="confirmStatusBtn" disabled>
+                <i class="fas fa-save"></i> Сохранить
+              </button>
+              <button class="btn-secondary" id="cancelStatusBtn">
+                <i class="fas fa-times"></i> Отмена
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="announcementGroupModal">
+      <div class="modal modal-lg">
+        <div class="modal-header">
+          <h3 id="announcementGroupTitle">Анонсы</h3>
+          <button class="close-modal" id="closeAnnouncementGroupModal">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body" id="announcementGroupContent">
+          <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin fa-2x"></i>
+            <p>Загрузка информации...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Исправляем пути для Electron
+      if (window.location.protocol === "file:") {
+        const base = document.createElement("base");
+        base.href = window.location.pathname.substring(
+          0,
+          window.location.pathname.lastIndexOf("/") + 1
+        );
+        document.head.appendChild(base);
+      }
+    </script>
+
+    <!-- Скрипты -->
+    <script type="module" src="js/main.js"></script>
+    <script src="js/storage.js"></script>
+  </body>
+</html>

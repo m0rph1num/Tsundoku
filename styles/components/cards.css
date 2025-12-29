@@ -1,0 +1,472 @@
+/* ========== ОБЩИЕ СТИЛИ КАРТОЧЕК ========== */
+/* БАЗОВЫЕ СТИЛИ для ВСЕХ карточек */
+.anime-card {
+  width: 210px;
+  height: auto;
+  cursor: pointer;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Стили для постера ВСЕХ карточек */
+.anime-card .anime-poster {
+  width: 210px;
+  height: 350px;
+  object-fit: cover;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-16);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Эффект наведения для ВСЕХ карточек */
+.anime-card:hover .anime-poster {
+  border-color: var(--primary-color);
+  transform: scale(1.03);
+}
+
+/* Информация под постером для ВСЕХ карточек */
+.anime-card .anime-info {
+  margin-top: 8px;
+}
+
+.anime-card .anime-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--text-15);
+  color: var(--text-color);
+}
+
+/* ========== КАРТОЧКИ БИБЛИОТЕКИ (СПЕЦИФИЧЕСКИЕ) ========== */
+/* Класс library-card должен ПЕРЕОПРЕДЕЛЯТЬ стили, где нужно */
+/* Контейнер для постера библиотеки */
+.library-card .anime-poster-wrapper {
+  position: relative;
+  width: 210px;
+  height: 350px;
+  border-radius: var(--radius-16);
+  overflow: hidden;
+}
+
+/* Кнопка редактирования ТОЛЬКО для библиотеки */
+.library-card .edit-anime-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid var(--primary-color);
+  border-radius: 50%;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.library-card:hover .edit-anime-btn {
+  opacity: 1;
+}
+
+.library-card .edit-anime-btn:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+/* Мета-информация для библиотеки */
+.library-card .anime-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  font-size: var(--text-12);
+  color: var(--text-secondary);
+}
+
+/* Прячем мета-информацию для статуса "watching" в библиотеке */
+.library-card[data-status="watching"] .anime-meta {
+  display: none;
+}
+
+/* Показываем прогресс-бар только для статуса "watching" */
+.watching-progress {
+  display: block !important; /* Всегда показывать если есть */
+}
+
+.library-card:not([data-status="watching"]) .watching-progress {
+  display: none;
+}
+
+/* Индикатор статуса аниме */
+.anime-status-indicator {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: var(--radius-5);
+  font-size: var(--text-10);
+  font-weight: 600;
+  text-transform: uppercase;
+  z-index: 5;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.anime-card[data-status="planned"] .anime-status-indicator {
+  background: rgba(59, 130, 246, 0.7);
+}
+
+.anime-card[data-status="watching"] .anime-status-indicator {
+  background: rgba(34, 197, 94, 0.7);
+}
+
+.anime-card[data-status="completed"] .anime-status-indicator {
+  background: rgba(139, 92, 246, 0.7);
+}
+
+.anime-card[data-status="postponed"] .anime-status-indicator {
+  background: rgba(245, 158, 11, 0.7);
+}
+
+/* ========== КАРТОЧКИ ПОИСКА (СПЕЦИФИЧЕСКИЕ) ========== */
+/* Базовый контейнер */
+.anime-card.search-result-card {
+  width: 210px;
+  cursor: pointer;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Убираем все границы у карточки */
+.anime-card.search-result-card {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Контейнер для постера поиска */
+.anime-card.search-result-card .poster-container {
+  position: relative;
+  width: 210px;
+  height: 350px;
+  border-radius: var(--radius-16);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+/* Постер поиска */
+.anime-card.search-result-card .anime-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-16);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Обводка ТОЛЬКО на постер при наведении */
+.anime-card.search-result-card:hover .anime-poster {
+  border-color: var(--primary-color);
+  transform: scale(1.03);
+}
+
+/* Оверлей ТОЛЬКО на постер */
+.anime-card.search-result-card .card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: var(--radius-16);
+  border: 1px solid transparent; /* Прозрачная граница по умолчанию */
+  padding: 2rem;
+  z-index: 2;
+}
+
+/* Граница оверлея появляется только при наведении */
+.anime-card.search-result-card:hover .card-overlay {
+  opacity: 1;
+  border-color: var(--primary-color);
+}
+
+/* Убираем кнопку редактирования у карточек поиска */
+.anime-card.search-result-card .edit-anime-btn {
+  display: none !important;
+}
+
+/* Информация под постером */
+.anime-card.search-result-card .anime-info {
+  margin-top: 8px;
+}
+
+.anime-card.search-result-card .anime-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--text-15);
+  color: var(--text-color);
+}
+
+.anime-card.search-result-card .anime-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  font-size: var(--text-12);
+  color: var(--text-secondary);
+}
+
+/* Кнопки в оверлее */
+.anime-card.search-result-card .btn-card-action {
+  background: var(--primary-color);
+  color: white;
+  padding: 10px 20px;
+  border-radius: var(--radius-8);
+  font-size: var(--text-14);
+  font-weight: 600;
+  width: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all var(--transition-base);
+  border: 2px solid transparent;
+  z-index: 3;
+}
+
+.anime-card.search-result-card .btn-card-action:hover {
+  background: var(--primary-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.anime-card.search-result-card .btn-details-card {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.anime-card.search-result-card .btn-details-card:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ========== ПРОГРЕСС БАР ДЛЯ СТАТУСА "СМОТРЮ" ========== */
+.watching-progress {
+  margin-top: 8px;
+  width: 100%;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: var(--text-12);
+}
+
+.progress-text {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.progress-percent {
+  color: var(--primary-color);
+  font-weight: 600;
+  background: rgba(255, 71, 87, 0.1);
+  padding: 2px 6px;
+  border-radius: var(--radius-5);
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--primary-light)
+  );
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+/* ========== КАРТОЧКИ АНОНСОВ (ДОЛЖНЫ БЫТЬ КАК КАРТОЧКИ ПОИСКА) ========== */
+/* Полностью переписываем стили для анонсов */
+.anime-card.announcement-card {
+  width: 210px;
+  cursor: pointer;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Контейнер для постера как у поиска */
+.anime-card.announcement-card .anime-poster-wrapper {
+  position: relative;
+  width: 210px;
+  height: 350px;
+  border-radius: var(--radius-16);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+/* Обводка ТОЛЬКО на постер при наведении (как у поиска) */
+.anime-card.announcement-card:hover .anime-poster {
+  border-color: var(--primary-color);
+  transform: scale(1.03);
+}
+
+/* Оверлей ТОЛЬКО на постер (как у поиска) */
+.anime-card.announcement-card .card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: var(--radius-16);
+  border: 1px solid transparent;
+  padding: 2rem;
+  z-index: 2;
+}
+
+/* Граница оверлея появляется только при наведении */
+.anime-card.announcement-card:hover .card-overlay {
+  opacity: 1;
+  border: 1px solid var(--primary-color);
+}
+
+/* Убираем всё лишнее из оверлея, оставляем только кнопку */
+.anime-card.announcement-card .card-overlay-content {
+  text-align: center;
+  color: white;
+  width: 100%;
+}
+
+/* Скрываем заголовок и информацию в оверлее */
+.anime-card.announcement-card .card-overlay-content h4,
+.anime-card.announcement-card .card-overlay-content .relation-info,
+.anime-card.announcement-card .card-overlay-content small,
+.anime-card.announcement-card .card-overlay-content p:not(.btn-card-action) {
+  display: none !important;
+}
+
+/* Информация под постером */
+.anime-card.announcement-card .anime-info {
+  margin-top: 8px;
+}
+
+.anime-card.announcement-card .anime-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--text-15);
+  color: var(--text-color);
+  text-align: left; /* Меняем с center на left */
+}
+
+/* Убираем кнопку добавления из основной части карточки */
+.anime-card.announcement-card .btn-add-announcement {
+  display: none !important;
+}
+
+/* Кнопки в оверлее (как у карточек поиска) */
+.anime-card.announcement-card .card-overlay .btn-card-action {
+  background: var(--primary-color);
+  color: white;
+  padding: 10px 20px;
+  border-radius: var(--radius-8);
+  font-size: var(--text-14);
+  font-weight: 600;
+  width: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all var(--transition-base);
+  border: 2px solid transparent;
+  z-index: 3;
+}
+
+.anime-card.announcement-card .card-overlay .btn-card-action:hover {
+  background: var(--primary-light);
+  transform: translateY(-2px);
+}
+
+/* Убираем старый оверлей для анонсов */
+.announcement-card .announcement-overlay {
+  display: none !important;
+}
+
+/* Кнопка редактирования для анонсов - видна только при hover */
+.anime-card.announcement-card .edit-poster-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid var(--primary-color);
+  border-radius: 50%;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  font-size: 16px;
+}
+
+/* Показываем кнопку только при hover на карточке */
+.anime-card.announcement-card:hover .edit-poster-btn {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Эффект при hover на самой кнопке */
+.anime-card.announcement-card .edit-poster-btn:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: scale(1.1);
+}

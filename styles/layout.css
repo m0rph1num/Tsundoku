@@ -1,0 +1,238 @@
+/* ========== ОСНОВНОЙ КОНТЕНТ ========== */
+.content-area {
+  flex: 1;
+  padding: 2rem 12.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  position: relative;
+}
+
+.content-area::-webkit-scrollbar {
+  width: 12px;
+}
+
+.content-area::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-full);
+}
+
+.content-area::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    to bottom,
+    var(--primary-color),
+    var(--primary-dark)
+  );
+  border-radius: var(--radius-full);
+  border: 3px solid var(--dark-bg);
+  transition: background var(--transition-base);
+}
+
+.content-area::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    to bottom,
+    var(--primary-light),
+    var(--primary-color)
+  );
+}
+
+.content-area {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) rgba(255, 255, 255, 0.05);
+}
+
+/* ========== СЕТКА КАРТОЧЕК ========== */
+.anime-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 3rem;
+  min-height: 200px;
+}
+
+/* Стили для пустых состояний */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-secondary);
+}
+
+.empty-state i {
+  margin-bottom: 1rem;
+  color: var(--border-color);
+  font-size: 3rem;
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  font-size: var(--text-18);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+.empty-state p {
+  font-size: var(--text-14);
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+/* Кнопки в пустых состояниях */
+.empty-state .btn-primary {
+  margin-top: 1rem;
+  background: var(--primary-color);
+  color: white;
+  padding: 10px 20px;
+  border-radius: var(--radius-8);
+  font-size: var(--text-14);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.empty-state .btn-primary:hover {
+  background: var(--primary-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ========== АНОНСЫ ========== */
+.announcements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 3rem;
+  min-height: 200px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Убедимся, что контейнер секции правильный */
+#announcementsSection .section-content {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.announcement-card {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.announcement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.announcement-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.announcement-badge {
+  background: #ffc107;
+  color: #856404;
+  padding: 4px 8px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.announcement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.announcement-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.announcement-relation {
+  font-size: 12px;
+  color: #666;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.announcement-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+  margin-left: 8px;
+}
+
+.btn-add-announcement {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-add-announcement:hover {
+  background: #218838;
+}
+
+.status-badge {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.status-badge.anons {
+  background: rgba(52, 152, 219, 0.2);
+  color: #2980b9;
+  border: 1px solid rgba(52, 152, 219, 0.3);
+}
+
+.status-badge.ongoing {
+  background: rgba(46, 204, 113, 0.2);
+  color: #27ae60;
+  border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.status-badge.future {
+  background: rgba(155, 89, 182, 0.2);
+  color: #8e44ad;
+  border: 1px solid rgba(155, 89, 182, 0.3);
+}
+
+.status-badge.recent {
+  background: rgba(241, 196, 15, 0.2);
+  color: #f39c12;
+  border: 1px solid rgba(241, 196, 15, 0.3);
+}

@@ -1,0 +1,124 @@
+/* ========== ОСНОВНЫЕ СТИЛИ ========== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-color: #ff4757;
+  --primary-light: #ff6b7a;
+  --primary-dark: #e63e4d;
+
+  --dark-bg: #0a0a0a;
+  --dark-bg-light: #1a1a1a;
+  --card-bg: #161616;
+  --card-bg-light: #262626;
+
+  --text-color: #f8fafc;
+  --text-secondary: #b0b0b0;
+  --text-tertiary: #898989;
+
+  --border-color: rgba(255, 255, 255, 0.2);
+  --border-light: rgba(255, 255, 255, 0.1);
+
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+
+  /* Размеры текста */
+  --text-11: 0.6875rem; /* 11px */
+  --text-12: 0.75rem; /* 12px */
+  --text-14: 0.875rem; /* 14px */
+  --text-15: 0.9375rem; /* 15px */
+  --text-16: 1rem; /* 16px */
+  --text-18: 1.125rem; /* 18px */
+  --text-19: 1.1875rem; /* 19px */
+  --text-20: 1.25rem; /* 20px */
+  --text-24: 1.5rem; /* 24px */
+
+  /* Скругления */
+  --radius-5: 5px;
+  --radius-8: 8px;
+  --radius-12: 12px;
+  --radius-16: 16px;
+  --radius-25: 25px;
+  --radius-full: 9999px;
+
+  /* Размеры иконок */
+  --icon-14: 14px;
+  --icon-19: 19px;
+  --icon-24: 24px;
+
+  /* Тени */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.5);
+
+  /* Анимации */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 350ms ease;
+  --transition-bounce: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hidden {
+  display: none !important;
+}
+
+body {
+  font-family: "Montserrat", "Segoe UI", sans-serif;
+  background-color: var(--dark-bg);
+  color: var(--text-color);
+  height: 100vh;
+  overflow: hidden;
+  line-height: 1.5;
+}
+
+input,
+button,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  outline: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Скрытие элементов */
+.hidden {
+  display: none !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  all: unset;
+  font: inherit;
+  display: block;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+.container.visible {
+  opacity: 1;
+  transform: translateY(0);
+}

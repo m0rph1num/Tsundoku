@@ -10,10 +10,34 @@ const baseUrl =
 // Импортируем компонент загрузочного экрана
 import { LoadingScreen } from "./components/loading-screen.js";
 
+// Получаем версию из package.json
+let appVersion = "0.9.9"; // Версия по умолчанию
+try {
+  // Для Electron - читаем package.json напрямую
+  if (window.require) {
+    const fs = window.require("fs");
+    const path = window.require("path");
+    const packageJsonPath = path.join(__dirname, "package.json");
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
+    appVersion = packageJson.version;
+  }
+  // Для веб-версии - пытаемся получить из глобальной переменной
+  else if (window.PACKAGE_VERSION) {
+    appVersion = window.PACKAGE_VERSION;
+  }
+} catch (error) {
+  console.warn(
+    "Не удалось прочитать версию из package.json, используем версию по умолчанию:",
+    error
+  );
+}
+
+// Делаем версию доступной глобально
+window.appVersion = appVersion;
+
 // Создаем загрузочный экран сразу
 window.loadingScreen = new LoadingScreen();
-window.loadingScreen.setVersion(window.appVersion || "1.0.0");
-window.loadingScreen.updateStatus("Загрузка основных модулей...");
+window.loadingScreen.setVersion(appVersion);
 
 // Устанавливаем минимальное время загрузки (5 секунд)
 const startTime = Date.now();
@@ -22,7 +46,6 @@ window.loadingScreen.updateProgress(10);
 // Импортируем апдейтер
 import { AppUpdater } from "./modules/updater.js";
 window.appUpdater = new AppUpdater();
-window.appUpdater.currentVersion = window.appVersion || "1.0.0";
 
 // Главный файл для инициализации приложения
 import { initApp } from "./core/app.js";

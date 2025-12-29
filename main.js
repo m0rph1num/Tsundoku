@@ -26,16 +26,12 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-      webSecurity: false,
+      webSecurity: true,
       enableRemoteModule: true,
     },
     frame: true,
     autoHideMenuBar: true,
   });
-
-  if (isDev) {
-    mainWindow.webContents.openDevTools();
-  }
 
   // Убираем стандартное меню
   Menu.setApplicationMenu(null);
@@ -131,6 +127,8 @@ function createWindow() {
     try {
       const { autoUpdater } = require("electron-updater");
 
+      autoUpdater.forceDevUpdateConfig = true;
+
       // Настройка autoUpdater
       autoUpdater.autoDownload = false;
       autoUpdater.autoInstallOnAppQuit = true;
@@ -138,8 +136,8 @@ function createWindow() {
       // Настройка feed URL
       autoUpdater.setFeedURL({
         provider: "github",
-        owner: "yourusername",
-        repo: "tsundoku",
+        owner: "m0rph1num",
+        repo: "Tsundoku",
         private: false,
       });
 

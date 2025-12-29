@@ -732,7 +732,7 @@ window.showAboutModal = function () {
         </div>
         
         <div style="margin-bottom: 1.5rem;">
-          <p><strong>Версия:</strong> ${window.appVersion || "1.0.0"}</p>
+          <p><strong>Версия:</strong> ${window.appVersion || "0.9.9"}</p>
           <p><strong>Разработчик:</strong> morphine</p>
         </div>
         
@@ -1337,7 +1337,7 @@ function saveSetting(key, value) {
 }
 
 // Функция для ручной проверки обновлений
-window.checkForUpdatesManually = async function() {
+window.checkForUpdatesManually = async function () {
   if (window.appUpdater) {
     const updateAvailable = await window.appUpdater.checkForUpdates();
     if (updateAvailable) {

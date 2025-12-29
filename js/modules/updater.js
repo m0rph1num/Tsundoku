@@ -1,16 +1,19 @@
 // js/modules/updater.js
+import { LoadingScreen } from "../components/loading-screen.js";
 
-// Добавляем экспорт класса
+// Упрощенный класс для проверки обновлений
 export class AppUpdater {
   constructor() {
-    this.currentVersion = "1.0.0";
-    this.githubRepo = "yourusername/tsundoku"; // Замените на ваш репозиторий
+    // Используем версию из глобальной переменной или версию по умолчанию
+    this.currentVersion = window.appVersion || "1.0.0";
+    this.githubRepo = "m0rph1num/Tsundoku";
     this.updateAvailable = false;
     this.latestVersion = null;
     this.releaseNotes = null;
-    this.downloadUrl = null;
+    this.githubReleasesUrl = "https://github.com/m0rph1num/Tsundoku/releases";
   }
 
+  // Проверка доступных обновлений через GitHub API
   async checkForUpdates() {
     if (window.loadingScreen) {
       window.loadingScreen.updateStatus("Проверка обновлений...");
@@ -26,6 +29,7 @@ export class AppUpdater {
         }
         return false;
       }
+
       // Получаем информацию о последней версии с GitHub
       const response = await fetch(
         `https://api.github.com/repos/${this.githubRepo}/releases/latest`,
@@ -42,12 +46,21 @@ export class AppUpdater {
 
       const latestRelease = await response.json();
 
+      // Логирование для отладки
+      console.log("GitHub API Response:", latestRelease);
+
       // Сравниваем версии
-      if (latestRelease.tag_name !== this.currentVersion) {
+      const releaseVersion = latestRelease.tag_name.startsWith("v")
+        ? latestRelease.tag_name.substring(1)
+        : latestRelease.tag_name;
+
+      console.log("Current version:", this.currentVersion);
+      console.log("Release version:", releaseVersion);
+
+      if (releaseVersion !== this.currentVersion) {
         this.updateAvailable = true;
         this.latestVersion = latestRelease.tag_name;
         this.releaseNotes = latestRelease.body;
-        this.downloadUrl = latestRelease.assets[0]?.browser_download_url || "";
 
         if (window.loadingScreen) {
           window.loadingScreen.updateStatus(
@@ -70,6 +83,7 @@ export class AppUpdater {
     }
   }
 
+  // Показ уведомления об обновлении
   showUpdateNotification() {
     if (!this.updateAvailable) return;
 
@@ -80,7 +94,7 @@ export class AppUpdater {
         <h3>Доступно обновление ${this.latestVersion}</h3>
         <div class="update-notes">${this.formatReleaseNotes()}</div>
         <div class="update-actions">
-          <button class="btn-primary update-now">Установить сейчас</button>
+          <button class="btn-primary update-now">Скачать обновление</button>
           <button class="btn-secondary update-later">Напомнить позже</button>
         </div>
       </div>
@@ -91,7 +105,7 @@ export class AppUpdater {
 
     // Обработчики кнопок
     notification.querySelector(".update-now").addEventListener("click", () => {
-      this.startUpdateWithLoadingScreen();
+      this.openGitHubReleases();
       notification.remove();
     });
 
@@ -108,122 +122,16 @@ export class AppUpdater {
       });
   }
 
+  // Открытие страницы релизов на GitHub
+  openGitHubReleases() {
+    showNotification("Открытие страницы загрузки обновлений...", "info");
+    window.open(this.githubReleasesUrl, "_blank");
+  }
+
+  // Форматирование заметок о выпуске
   formatReleaseNotes() {
     if (!this.releaseNotes) return "Новые функции и исправления ошибок.";
     return this.releaseNotes.split("\n").slice(0, 3).join("<br>");
-  }
-
-  startUpdate() {
-    if (window.loadingScreen) {
-      window.loadingScreen.updateStatus("Подготовка к обновлению...");
-      window.loadingScreen.updateProgress(0);
-      document.getElementById("loading-screen").classList.remove("hidden");
-    }
-
-    if (window.require) {
-      try {
-        // Используем встроенный autoUpdater от Electron
-        const { autoUpdater } = window.require("electron").autoUpdater;
-        const { ipcRenderer } = window.require("electron");
-
-        // Настраиваем autoUpdater
-        autoUpdater.on("checking-for-update", () => {
-          if (window.loadingScreen) {
-            window.loadingScreen.updateStatus("Проверка обновлений...");
-          }
-        });
-
-        autoUpdater.on("update-available", () => {
-          if (window.loadingScreen) {
-            window.loadingScreen.updateStatus("Обновление доступно");
-          }
-        });
-
-        autoUpdater.on("update-not-available", () => {
-          if (window.loadingScreen) {
-            window.loadingScreen.updateStatus("Обновления не найдены");
-            window.loadingScreen.hide();
-          }
-          showNotification("Обновления не найдены", "info");
-        });
-
-        autoUpdater.on("download-progress", (progress) => {
-          if (window.loadingScreen) {
-            window.loadingScreen.updateStatus(
-              `Загрузка: ${Math.round(progress.percent)}%`
-            );
-            window.loadingScreen.updateProgress(progress.percent);
-          }
-        });
-
-        autoUpdater.on("update-downloaded", () => {
-          if (window.loadingScreen) {
-            window.loadingScreen.updateStatus("Обновление загружено!");
-            window.loadingScreen.updateProgress(100);
-          }
-
-          // Сохраняем changelog для показа после перезапуска
-          if (this.releaseNotes) {
-            localStorage.setItem("updateChangelog", this.releaseNotes);
-            localStorage.setItem("updatedVersion", this.latestVersion);
-          }
-
-          // Используем ipcRenderer для показа диалога
-          ipcRenderer.send("show-update-downloaded-dialog", this.latestVersion);
-        });
-
-        autoUpdater.on("error", (error) => {
-          console.error("Ошибка обновления:", error);
-          if (window.loadingScreen) {
-            window.loadingScreen.updateStatus("Ошибка обновления");
-            window.loadingScreen.hide();
-          }
-          showNotification("Не удалось обновить приложение", "error");
-        });
-
-        // Настраиваем feed URL
-        autoUpdater.setFeedURL({
-          provider: "github",
-          owner: "m0rph1num",
-          repo: "Tsundoku",
-          private: false,
-        });
-
-        // Запускаем проверку
-        autoUpdater.checkForUpdates();
-      } catch (error) {
-        console.error("Ошибка инициализации autoUpdater:", error);
-        if (window.loadingScreen) {
-          window.loadingScreen.updateStatus("Ошибка инициализации обновления");
-          window.loadingScreen.hide();
-        }
-        showNotification(
-          "Не удалось инициализировать систему обновлений",
-          "error"
-        );
-      }
-    } else {
-      // Для веб-версии (если нужно)
-      if (window.loadingScreen) {
-        window.loadingScreen.updateStatus(
-          "Обновление доступно только в десктоп версии"
-        );
-        window.loadingScreen.hide();
-      }
-    }
-  }
-
-  // Новый метод для обновления с экраном загрузки
-  startUpdateWithLoadingScreen() {
-    // Показываем экран загрузки
-    if (window.loadingScreen) {
-      window.loadingScreen.updateStatus("Подготовка к обновлению...");
-      window.loadingScreen.updateProgress(0);
-      document.getElementById("loading-screen").classList.remove("hidden");
-    }
-
-    // Запускаем процесс обновления
-    this.startUpdate();
   }
 
   // Периодическая проверка обновлений

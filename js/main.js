@@ -11,7 +11,7 @@ const baseUrl =
 import { LoadingScreen } from "./components/loading-screen.js";
 
 // Получаем версию из package.json
-let appVersion = "0.9.9"; // Версия по умолчанию
+let appVersion = "1.0.0"; // Версия по умолчанию
 try {
   // Для Electron - читаем package.json напрямую
   if (window.require) {

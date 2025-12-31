@@ -840,6 +840,136 @@ export async function checkAnnouncementsWithCache() {
   }
 }
 
+export async function checkAnnouncementsForAnime(animeId) {
+  try {
+    const anime = window.library[animeId];
+    if (!anime || anime.status !== 'completed') {
+      return;
+    }
+
+    // Проверяем, не проверяли ли мы это аниме сегодня
+    const checkCache = localStorage.getItem("tsundoku-announcement-checks");
+    const checkCacheData = checkCache ? JSON.parse(checkCache) : {};
+    const today = new Date();
+
+    if (checkCacheData[animeId]) {
+      const lastCheckDate = new Date(checkCacheData[animeId].timestamp);
+      const isSameDay =
+        lastCheckDate.getDate() === today.getDate() &&
+        lastCheckDate.getMonth() === today.getMonth() &&
+        lastCheckDate.getFullYear() === today.getFullYear();
+
+      if (isSameDay) {
+        console.log(`Анонсы для ${anime.title} уже проверялись сегодня`);
+        return;
+      }
+    }
+
+    // Получаем связанные аниме с Shikimori
+    let relatedData = [];
+    if (
+      window.ShikimoriAPI &&
+      typeof window.ShikimoriAPI.getAnimeRelated === "function"
+    ) {
+      relatedData = await window.ShikimoriAPI.getAnimeRelated(animeId);
+    } else {
+      const details = await window.ShikimoriAPI.getAnimeDetails(animeId);
+      relatedData = details.related || [];
+    }
+
+    console.log(
+      "📡 Проверка анонсов для",
+      anime.title,
+      ":",
+      relatedData
+    );
+
+    // Фильтруем только БУДУЩИЕ аниме-продолжения
+    const animeSequels = relatedData.filter((rel) => {
+      const isAnime =
+        rel.anime &&
+        ["tv", "movie", "ova", "ona", "special"].includes(rel.anime.kind);
+      const isSequelType = [
+        "Sequel",
+        "Prequel",
+        "Spin-off",
+        "Side story",
+      ].includes(rel.relation);
+      const isFutureRelease = isFutureAnime(rel.anime || rel);
+      return isAnime && isSequelType && isFutureRelease;
+    });
+
+    if (animeSequels.length > 0) {
+      if (!window.announcements[animeId]) {
+        window.announcements[animeId] = {
+          originalId: anime.id,
+          originalTitle: anime.title || anime.russian,
+          cachedAt: new Date().toISOString(),
+          lastChecked: new Date().toISOString(),
+          announcements: [],
+        };
+      }
+
+      animeSequels.forEach((seq) => {
+        const sequelId = seq.anime?.id || seq.id;
+        const sequelTitle =
+          seq.anime?.russian ||
+          seq.anime?.name ||
+          seq.russian ||
+          seq.name;
+        const relation = seq.relation || "Unknown";
+
+        if (sequelId && sequelTitle) {
+          // Проверяем, что этого анонса еще нет
+          const alreadyExists = window.announcements[animeId].announcements.some(
+            (ann) => ann.id === sequelId
+          );
+
+          if (!alreadyExists) {
+            window.announcements[animeId].announcements.push({
+              id: sequelId,
+              title: sequelTitle,
+              relation: relation,
+              addedAt: new Date().toISOString(),
+              cachedAt: new Date().toISOString(),
+              animeData: seq.anime || seq,
+            });
+
+            console.log(`✅ Найден новый анонс: ${sequelTitle}`);
+          }
+        }
+      });
+
+      // Обновляем кэш
+      checkCacheData[animeId] = {
+        timestamp: Date.now(),
+        lastChecked: new Date().toISOString(),
+        title: anime.title,
+        foundAnnouncements: animeSequels.length,
+      };
+
+      localStorage.setItem(
+        "tsundoku-announcement-checks",
+        JSON.stringify(checkCacheData)
+      );
+      saveAnnouncements();
+
+      // Обновляем отображение
+      if (window.renderAnnouncements) {
+        window.renderAnnouncements();
+      }
+
+      showNotification(
+        `Найдены анонсы для "${anime.title}"!`,
+        "success"
+      );
+    }
+  } catch (error) {
+    console.error("Ошибка при проверке анонсов для аниме:", error);
+    showNotification("Ошибка при проверке анонсов", "error");
+  }
+}
+
 // Функция для очистки анонсов, которые уже в библиотеке
 function cleanupAnnouncements() {
   console.log("Автоматическая очистка анонсов...");
@@ -1287,6 +1417,7 @@ window.closeAnnouncementGroupModal = closeAnnouncementGroupModal;
 window.updateAnnouncementPoster = updateAnnouncementPoster;
 window.initAnnouncementHandlers = initAnnouncementHandlers;
 window.restoreMissingPosters = restoreMissingPosters;
+window.checkAnnouncementsForAnime = checkAnnouncementsForAnime;
 
 // Инициализация обработчиков
 // setupAnnouncementPosterButtonListeners();

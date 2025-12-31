@@ -1245,7 +1245,13 @@ function updateCacheSize() {
   const cacheSizeElement = document.getElementById("cacheSize");
   if (cacheSizeElement) {
     const sizeKB = Math.round(totalSize / 1024);
-    cacheSizeElement.textContent = `Размер кэша: ${sizeKB} KB (${cacheCount} записей)`;
+    // Конвертируем в мегабайты, если размер больше 1024 КБ
+    if (sizeKB >= 1024) {
+      const sizeMB = (sizeKB / 1024).toFixed(2);
+      cacheSizeElement.textContent = `Размер кэша: ${sizeMB} MB (${cacheCount} записей)`;
+    } else {
+      cacheSizeElement.textContent = `Размер кэша: ${sizeKB} KB (${cacheCount} записей)`;
+    }
   }
 }
 

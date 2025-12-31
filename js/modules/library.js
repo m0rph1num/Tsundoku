@@ -83,6 +83,11 @@ export function saveAnimeToLibrary(id, animeData) {
       // Fallback
       localStorage.setItem("tsundoku-library", JSON.stringify(window.library));
     }
+
+    // Проверяем анонсы для завершенных аниме сразу после добавления
+    if (animeData.status === "completed") {
+      checkAnnouncementsForAnime(id);
+    }
   } catch (error) {
     showNotification("Ошибка сохранения в библиотеку", "error");
   }
@@ -124,6 +129,56 @@ function backupLibrary() {
 if (window.library && Object.keys(window.library).length > 0) {
   backupLibrary();
 }
+
+// Функция для миграции данных при обновлении
+export function migrateLibraryData() {
+  try {
+    // Проверяем текущую версию данных
+    const currentVersion = localStorage.getItem("tsundoku-data-version");
+
+    // Если версия не установлена или старая, выполняем миграцию
+    if (!currentVersion || currentVersion < "1.0.1") {
+      console.log("🔄 Выполняем миграцию данных библиотеки...");
+
+      // 1. Переносим данные из старого формата в новый
+      const oldLibrary = localStorage.getItem("animeLibrary");
+      if (oldLibrary) {
+        try {
+          const parsedLibrary = JSON.parse(oldLibrary);
+          if (Object.keys(parsedLibrary).length > 0) {
+            // Сохраняем в новом формате
+            localStorage.setItem("tsundoku-library", oldLibrary);
+            localStorage.removeItem("animeLibrary");
+            console.log("✅ Данные библиотеки перенесены в новый формат");
+          }
+        } catch (e) {
+          console.error("Ошибка парсинга старой библиотеки:", e);
+        }
+      }
+
+      // 2. Переносим анонсы
+      const oldAnnouncements = localStorage.getItem("announcements");
+      if (oldAnnouncements) {
+        try {
+          localStorage.setItem("tsundoku-announcements", oldAnnouncements);
+          localStorage.removeItem("announcements");
+          console.log("✅ Данные анонсов перенесены в новый формат");
+        } catch (e) {
+          console.error("Ошибка переноса анонсов:", e);
+        }
+      }
+
+      // 3. Устанавливаем новую версию данных
+      localStorage.setItem("tsundoku-data-version", "1.0.1");
+      console.log("✅ Миграция данных завершена");
+    }
+  } catch (error) {
+    console.error("Ошибка миграции данных:", error);
+  }
+}
+
+// Вызываем миграцию при загрузке модуля
+migrateLibraryData();
 
 export function updateAnimeStatus(id, status) {
   if (window.library[id]) {
@@ -510,3 +565,4 @@ window.updateAnimeStatus = updateAnimeStatus;
 window.deleteAnime = deleteAnime;
 window.cleanupAnnouncements = cleanupAnnouncements;
 window.clearAnnouncementsData = clearAnnouncementsData;
+window.migrateLibraryData = migrateLibraryData;
